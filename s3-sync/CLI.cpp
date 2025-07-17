@@ -149,7 +149,7 @@ void CLI::Setup()
 			return;
 		
 		std::string confirmation{};
-		std::cout << "Are you sure you want to wipe your entire bucket? Type \"yes\" (without the quotation marks) to confirm: ";
+		std::cout << "Are you sure you want to delete every object in the specified bucket? Type \"yes\" (without the quotation marks) to confirm: ";
 		std::cin >> confirmation;
 
 		if (confirmation != "yes")
