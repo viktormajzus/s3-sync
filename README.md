@@ -1,28 +1,28 @@
-#s3-sync
+# s3-sync
 
 A basic tool to sync up with an S3 bucket.
 
-##Build Instructions
+## Build Instructions
 
-###Clone vcpkg into any desired folder (in my case I just put it into Users)
+### Clone vcpkg into any desired folder (in my case I just put it into Users)
 ```
 git clone https://github.com/microsoft/vcpkg
 cd vcpkg
 .\bootstrap-vcpkg.bat
 ```
 
-###Install AWS SDK with vcpkg
+### Install AWS SDK with vcpkg
 ```
 .\vcpkg install aws-sdk-cpp[s3]:x64-windows
 ```
 
-###Clone this repository anywhere
+### Clone this repository anywhere
 ```
 git clone https://github.com/viktormajzus/s3-sync
 cd s3-sync
 ```
 
-###Edit CMakePresets.json to use your path to vcpkg.cmake
+### Edit CMakePresets.json to use your path to vcpkg.cmake
 ```
 {
   "name": "windows-base",
@@ -43,8 +43,8 @@ cd s3-sync
 },
 ```
 
-###Build it and enjoy!
+### Build it and enjoy!
 
-###Recommended:
+### Recommended:
 Add the folder to your Path environment variable:
 Windows Key -> Edit the system environment variables -> Environment variables -> Select Path -> Press Edit -> New -> C:\PATH\TO\source\repos\s3-sync\out\build\x64-release\s3-sync folder (not the executable!!)
