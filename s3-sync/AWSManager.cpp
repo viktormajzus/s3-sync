@@ -19,6 +19,7 @@
 #include <aws/s3/model/PutObjectRequest.h>
 #include <aws/s3/model/GetObjectRequest.h>
 #include <aws/core/utils/DateTime.h>
+#include <aws/s3/model/DeleteObjectRequest.h>
 
 AWSManager::AWSManager(std::string_view accessKey, std::string_view secretKey, std::string_view region)
 {
@@ -296,6 +297,29 @@ std::expected<int, Error::ErrorCode> AWSManager::get(std::string_view srcBucket,
 		f.wait();
 
 	return fileCount;
+}
+
+std::expected<std::pair<int, int>, Error::ErrorCode> AWSManager::DeleteAllObjects(std::string_view bucketName)
+{
+	auto objects{ GetObjects(bucketName) };
+	if (!objects.has_value())
+		return std::unexpected(Error::ErrorCode::RetrieveFailed);
+	if (objects.value().empty())
+		return std::unexpected(Error::ErrorCode::NoObjects);
+
+	int deletedObjects{ 0 };
+
+	for (const auto& object : objects.value()) {
+		Aws::S3::Model::DeleteObjectRequest request{};
+		request.WithKey(object.GetKey()).WithBucket(bucketName);
+
+		auto outcome{ GetClient().DeleteObject(request) };
+		if (outcome.IsSuccess()) {
+			++deletedObjects;
+		}
+	}
+
+	return std::make_pair(deletedObjects, objects.value().size());
 }
 
 std::vector<std::string> AWSManager::GetRelativeFilePaths(std::string_view rootPath)

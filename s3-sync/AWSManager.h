@@ -13,6 +13,8 @@
 #include <string_view>
 #include <filesystem>
 
+#include <utility>
+
 class AWSManager {
 private:
 	Aws::SDKOptions options;
@@ -34,6 +36,7 @@ public:
 	std::expected<std::vector<Aws::S3::Model::Object>, Error::ErrorCode> GetObjects(std::string_view bucketName);
 	std::expected<void, Error::ErrorCode> ListObjects(std::string_view bucketName);
 	std::expected<int, Error::ErrorCode> get(std::string_view srcBucket, std::string_view dstPath);
+	std::expected<std::pair<int, int>, Error::ErrorCode> DeleteAllObjects(std::string_view bucketName);
 
 private:
 	// Helper func

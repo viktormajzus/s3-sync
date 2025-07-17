@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <filesystem>
+#include <utility>
 
 CLI::CLI(int argc, char** argv)
 	: argc{ argc }, argv{ argv }
@@ -99,6 +100,8 @@ void CLI::Setup()
 			return;
 		}
 
+		std::cout << "Successfully uploaded " << result.value() << " objects!\n";
+
 		return;
 	}
 
@@ -112,6 +115,8 @@ void CLI::Setup()
 			std::cerr << Error::ErrorParser(result.error());
 			return;
 		}
+
+		std::cout << "Successfully downloaded " << result.value() << " objects!\n";
 
 		return;
 	}
@@ -137,6 +142,36 @@ void CLI::Setup()
 			return;
 		}
 	}
+
+	if (std::string_view(argv[1]) == "delete") {
+		int requiredArgCount{ 3 };
+		if (!CheckArgCount(requiredArgCount))
+			return;
+		
+		std::string confirmation{};
+		std::cout << "Are you sure you want to wipe your entire bucket? Type \"yes\" (without the quotation marks) to confirm: ";
+		std::cin >> confirmation;
+
+		if (confirmation != "yes")
+			return;
+
+		auto result{ manager.DeleteAllObjects(argv[2]) };
+		if (!result.has_value()) {
+			std::cerr << Error::ErrorParser(result.error());
+			return;
+		}
+
+		std::cout << "Successfully deleted " << result.value().first << " out of " << result.value().second << " objects!\n";
+		return;
+	}
+
+	if (std::string_view(argv[1]) == "help") {
+		HelpMenu();
+		return;
+	}
+
+	InvalidArguments();
+	return;
 }
 
 void CLI::InvalidArguments()
@@ -148,7 +183,23 @@ void CLI::InvalidArguments()
 		<< "To upload:\n s3-sync put <SOURCE/FOLDER> <DESTINATION_BUCKET>\n"
 		<< "To download:\n s3-sync get <SOURCE_BUCKET> <DESTINATION_FOLDER>\n"
 		<< "To list buckets:\n s3-sync list -b\n"
-		<< "To list objects:\n s3-sync list -o <SOURCE_BUCKET>\n";
+		<< "To list objects:\n s3-sync list -o <SOURCE_BUCKET>\n"
+		<< "To wipe a bucket:\n s3-sync delete <DESTINATION_BUCKET>\n"
+		<< "To view this menu again:\n s3-sync help\n";
+}
+
+void CLI::HelpMenu()
+{
+	std::cerr << "Documentation:\n";
+	std::cout
+		<< "s3-sync usage:\n\n"
+		<< "To configure:\n s3-sync configure\n"
+		<< "To upload:\n s3-sync put <SOURCE/FOLDER> <DESTINATION_BUCKET>\n"
+		<< "To download:\n s3-sync get <SOURCE_BUCKET> <DESTINATION_FOLDER>\n"
+		<< "To list buckets:\n s3-sync list -b\n"
+		<< "To list objects:\n s3-sync list -o <SOURCE_BUCKET>\n"
+		<< "To wipe a bucket:\n s3-sync delete <DESTINATION_BUCKET>\n"
+		<< "To view this menu again:\n s3-sync help\n";
 }
 
 std::expected<std::vector<std::string>, Error::ErrorCode> CLI::CheckConfigVector()

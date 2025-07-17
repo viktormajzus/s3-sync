@@ -19,6 +19,7 @@ private:
 	std::expected < std::vector<std::string>, Error::ErrorCode> ReadConfigFile();
 	void Setup();
 	void InvalidArguments();
+	void HelpMenu();
 	std::expected<std::vector<std::string>, Error::ErrorCode> CheckConfigVector();
 	bool CheckArgCount(int argc);
 };
