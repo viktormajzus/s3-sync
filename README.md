@@ -57,7 +57,7 @@ Windows Key -> Edit the system environment variables -> Environment variables ->
 
 Will open a configuration prompt, where you can type your Access Key, Secret Key, and Region.
 
-**WARNING** This data is stored in an unencrypted format in `%LOCALAPPDATA%/s3-sync/config.cfg`
+**WARNING** This data is stored in an unencrypted format in `%LOCALAPPDATA%/s3-sync/config.cfg` or `home/USER/.local/state/s3-sync/config.cfg` if you're on linux
 
 ### Upload Files
 `s3-sync put <SOURCE/FOLDER> <DESTINATION_BUCKET>`
