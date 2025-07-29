@@ -89,6 +89,8 @@ void CLI::Setup()
 
 	AWSManager manager(credentials.value()[1], credentials.value()[2], credentials.value()[3]);
 
+	credentials.value().clear();
+
 	if (std::string_view(argv[1]) == "put") {
 		int requiredArgCount{ 4 };
 		if (!CheckArgCount(requiredArgCount))
