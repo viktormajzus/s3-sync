@@ -103,8 +103,11 @@ void CLI::Setup()
 		return;
 	}
 	auto credentials{ ReadConfigFile() };
-	if (!credentials.has_value())
+	if (!credentials.has_value()) {
+		std::cerr << "An error has occured: " << Error::ErrorParser(credentials.error());
+
 		return;
+	}
 
 	AWSManager manager(credentials.value()[1], credentials.value()[2], credentials.value()[3]);
 
