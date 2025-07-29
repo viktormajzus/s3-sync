@@ -18,15 +18,12 @@ CLI::CLI(int argc, char** argv)
 	else
 		throw std::runtime_error("LOCALAPPDATA not set");
 #elif __linux__
-	const char* xdgState = std::getenv("XDG_STATE_HOME");
-	if (xdgState)
-		configPath = std::filesystem::path(xdgState) / "s3-sync" / "config.cfg";
-	else {
-		const char* home = std::getenv("HOME");
-		if (!home)
-			throw std::runtime_error("Neither XDG_STATE_HOME nor HOME is set");
+	
+	const char* home = std::getenv("HOME");
+	if (!home)
+		throw std::runtime_error("Neither XDG_STATE_HOME nor HOME is set");
 
-		configPath = std::filesystem::path(home) / ".local" / "state" / "s3-sync" / "config.cfg";
+	configPath = std::filesystem::path(home) / ".local" / "state" / "s3-sync" / "config.cfg";
 
 #else
 #error "Unsupported OS"
