@@ -11,8 +11,27 @@
 CLI::CLI(int argc, char** argv)
 	: argc{ argc }, argv{ argv }
 {
-	configPath = std::getenv("LOCALAPPDATA");
-	configPath /= "s3-sync\\config.cfg";
+#ifdef _WIN32
+	const char* appData = std::getenv("LOCALAPPDATA");
+	if (appData)
+		configPath = std::filesystem::path(appData) / "s3-sync" / "config.cfg";
+	else
+		throw std::runtime_error("LOCALAPPDATA not set");
+#elif __linux__
+	const char* xdgState = std::getenv("XDG_STATE_HOME");
+	if (xdgState)
+		configPath = std::filesystem::path(xdgState) / "s3-sync" / "config.cfg";
+	else {
+		const char* home = std::getenv("HOME");
+		if (!home)
+			throw std::runtime_error("Neither XDG_STATE_HOME nor HOME is set");
+
+		configPath = std::filesystem::path(home) / ".local" / "state" / "s3-sync" / "config.cfg";
+
+#else
+#error "Unsupported OS"
+#endif
+
 
 	Setup();
 }
